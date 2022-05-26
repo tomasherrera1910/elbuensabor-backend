@@ -1,0 +1,9 @@
+POST http://localhost:3001/addresses/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNzUzYTI5NTgzYmNkMGE1YzEwMDFmNCIsImVtYWlsIjoic3NhQGdtYWlsLmNvbSIsImlhdCI6MTY1MTg1NTAxOCwiZXhwIjoxNjUyMDI3ODE4fQ.uMrsL2bf89yxJmbJCArubnk1kTo_n-t23R-xUPmUxQY
+
+{
+    "calle" : "asdas",
+    "numero" : 1231,
+    "localidad" : "zajhg"
+}

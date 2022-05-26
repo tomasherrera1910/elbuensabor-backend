@@ -1,0 +1,7 @@
+PUT http://localhost:3001/users/62743a20bffd747a4057f903
+Content-Type: application/json
+
+{
+  "nombre" : "asldjask",  
+  "apellido" : "ddd"
+}

@@ -1,0 +1,11 @@
+POST http://localhost:3001/users/
+Content-Type: application/json
+
+{
+    "nombre": "aaas",
+    "apellido": "sas",
+    "username": "ssa",
+    "email": "ssa@gmail.com",
+    "clave": "clave",
+    "telefono": "32132131"
+}
