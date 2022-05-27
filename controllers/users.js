@@ -33,7 +33,7 @@ userRouter.post('/', async(req, res, next) => {
         clave: claveHash,
         telefono,
         rol: 'usuario',
-	addresses: []
+	    addresses: []
     })
     newUser.save()
     .then(() => res.status(201).json({message: 'Usuario creado con éxito!'}))

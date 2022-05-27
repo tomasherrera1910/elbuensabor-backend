@@ -1,7 +1,9 @@
 const artManuDetalleRouter = require('express').Router()
 const ArticuloManufacturadoDetalle = require('../models/ArticuloManufacturadoDetalle')
 const ArticuloInsumo = require('../models/ArticuloInsumo')
+const ArticuloManufacturado = require('../models/ArticuloManufacturado')
 const User = require('../models/User')
+const userExtractor = require('../middlewares/userExtractor')
 
 artManuDetalleRouter.get('/', (req, res, next) => {
     ArticuloManufacturadoDetalle.find({})
@@ -26,21 +28,27 @@ artManuDetalleRouter.post('/:id', userExtractor, async(req, res, next) => {
         return res.status(401).json({error:'¡Solo los usuarios con permisos pueden realizar esta acción!'})
     }
     const {id} = params
-    const articuloInsumo = await ArticuloInsumo.findById(id)
-    if(!articuloInsumo || articuloInsumo.esInsumo){
-        return res.status(401).json({error:'¡No se encontró el artículo, o se selecciono un artículo insumo!'})
+    const articuloManufacturado = await ArticuloManufacturado.findById(id)
+    if(!articuloManufacturado){
+        return res.status(401).json({error:'¡No se encontró el artículo manufacturado!'})
     }
-    const {cantidad} = body
-    if(!cantidad){
-        return res.status(400).json({error:'¡Debe ingresar la cantidad!'})
+    const {cantidad, articuloInsumo} = body
+    if(!cantidad || !articuloInsumo){
+        return res.status(400).json({error:'¡Debe ingresar la cantidad y el producto a usar!'})
+    }
+    const ingrediente = await ArticuloInsumo.findById(articuloInsumo)
+    if(!ingrediente || ingrediente.esInsumo){
+        return res.status(400).json({error:'¡No se encontró el artículo, o se selecciono un artículo insumo!'})
     }
     const newArtManuDetalle = new ArticuloManufacturadoDetalle({
         cantidad,
-        unidadMedida: articuloInsumo.unidadMedida,
-        articuloInsumo: articuloInsumo._id
+        unidadMedida: ingrediente.unidadMedida,
+        articuloInsumo: ingrediente._id
     })
     try {
         const savedArticuloManuDetalle = await newArtManuDetalle.save()
+        articuloManufacturado.ingredientes = articuloManufacturado.ingredientes.concat(savedArticuloManuDetalle._id)
+        await articuloManufacturado.save()
         res.status(201).json(savedArticuloManuDetalle)
     } catch (error) {
         next(error)
@@ -75,4 +83,4 @@ artManuDetalleRouter.delete('/:id', userExtractor, async(req, res, next) => {
     .catch(error => next(error))
 })
 
-module.exports = articulosInsumoRouter
+module.exports = artManuDetalleRouter

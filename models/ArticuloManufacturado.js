@@ -7,10 +7,11 @@ const articuloManufacturadoSchema= new Schema({
     denominacion: String,
     precioVenta: Number,
     imagen: String,
-    articulosInsumos: [{
+    ingredientes: [{
         type: Schema.Types.ObjectId,
         ref: 'ArticuloManufacturadoDetalle'
-    }]
+    }],
+    baja: Boolean
 })
 
 articuloManufacturadoSchema.set('toJSON', {

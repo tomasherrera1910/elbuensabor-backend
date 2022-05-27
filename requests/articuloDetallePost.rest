@@ -1,0 +1,8 @@
+POST http://localhost:3001/articulosManuDetalle/629106f3d67f83c8805641c5
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyN2Q5MTIxZTFhZmFhZjc3ODFjMWRkMyIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjUzNTA5MTQ4LCJleHAiOjE2NTM2ODE5NDh9.LiWHbejH7eSy1tr30t7tNAN6JJ-gJ5wrVIG0LmAhwns
+
+{
+    "cantidad": 500,
+    "articuloInsumo": "628e8c33ca72c91a818ba326"
+}
