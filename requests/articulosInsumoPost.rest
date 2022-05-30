@@ -1,12 +1,13 @@
 POST http://localhost:3001/articulosInsumo
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyN2Q5MTIxZTFhZmFhZjc3ODFjMWRkMyIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjUzNTA5MTQ4LCJleHAiOjE2NTM2ODE5NDh9.LiWHbejH7eSy1tr30t7tNAN6JJ-gJ5wrVIG0LmAhwns
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyN2Q5MTIxZTFhZmFhZjc3ODFjMWRkMyIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjUzODU1NTMyLCJleHAiOjE2NTQwMjgzMzJ9._2owQD6GimPFyNqzMCiU7lasrDSxm_23bM3lmLNn82A
 
 {
-    "rubro":"ingredientes",
-    "denominacion":"harina",
-    "precioCompra":"700",
-    "stockActual":"5000",
-    "unidadMedida":"gramos"
+    "rubro":"gaseosas",
+    "denominacion":"coca 500ml",
+    "precioCompra":"100",
+    "stockActual":"200",
+    "unidadMedida":"mililitros",
+    "esInsumo":true
 } 
 

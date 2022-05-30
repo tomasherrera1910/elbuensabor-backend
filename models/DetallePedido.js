@@ -15,7 +15,11 @@ const detallePedidoSchema = new Schema({
         type: String,
         required: true,
         enum: ['ArticuloManufacturado', 'ArticuloInsumo']
-      }
+      },
+     pedido: {
+      type: Schema.Types.ObjectId,
+      ref: 'Pedido'
+     } 
 })
 detallePedidoSchema.set('toJSON', {
     transform: (document, returnedObject) => {
