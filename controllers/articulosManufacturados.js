@@ -5,7 +5,7 @@ const User = require('../models/User')
 const userExtractor = require('../middlewares/userExtractor')
 
 articulosManufacturadosRouter.get('/', (req, res, next) => {
-    ArticuloManufacturado.find({})
+    ArticuloManufacturado.find({}).populate('ingredientes')
     .then(articulos => res.json(articulos))
     .catch(error => next(error))
 })

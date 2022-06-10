@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
-const {model, Schema} = mongoose
+const { model, Schema } = mongoose
 
 const articuloManufacturadoDetalleSchema = new Schema({
     cantidad: Number,
     unidadMedida: String,
+    nombre: String,
     articuloInsumo: {
         type: Schema.Types.ObjectId,
         ref: 'ArticuloInsumo'

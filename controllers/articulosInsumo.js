@@ -10,7 +10,7 @@ articulosInsumoRouter.get('/', (req, res, next) => {
 })
 
 articulosInsumoRouter.get('/:id', (req, res, next) => {
-    const {id} = req.body
+    const {id} = req.params
     ArticuloInsumo.findById(id)
     .then(articulo => {
         articulo ? res.json(articulo)
@@ -25,9 +25,13 @@ articulosInsumoRouter.post('/', userExtractor, async(req, res, next) => {
     if(!user || user.rol !== 'admin'){
         return res.status(401).json({error:'¡Solo los usuarios con permisos pueden realizar esta acción!'})
     }
-    const {rubro, denominacion, precioCompra, precioVenta, stockActual, stockMinimo, unidadMedida, esInsumo} = body
+    const {rubro, denominacion, precioCompra, precioVenta, stockActual, stockMinimo, unidadMedida} = body
     if(!rubro || !denominacion || !precioCompra || !stockActual || !unidadMedida){
         return res.status(400).json({error:'Debe llenar los campos rubro, denominacion, precio compra, stock y unidad de medida para crear el articulo'})
+    }
+    let esInsumo = false
+    if(rubro !== 'ingredientes'){
+    esInsumo = true
     }
     const newArticuloInsumo = new ArticuloInsumo({
         rubro,
@@ -37,7 +41,7 @@ articulosInsumoRouter.post('/', userExtractor, async(req, res, next) => {
         stockActual,
         stockMinimo: stockMinimo || 0,
         unidadMedida,
-        esInsumo: esInsumo || false,
+        esInsumo: esInsumo,
         baja: false 
     })
     try {
@@ -54,14 +58,16 @@ articulosInsumoRouter.put('/:id', userExtractor, async(req, res, next) => {
     if(!user || user.rol !== 'admin'){
         return res.status(401).json({error:'¡Solo los usuarios con permisos pueden realizar esta acción!'})
     }
-    const {rubro, denominacion, precioCompra, precioVenta, stockActual, stockMinimo, unidadMedida, esInsumo} = body
+    const {rubro, denominacion, precioCompra, precioVenta, stockActual, stockMinimo, unidadMedida, esInsumo, baja} = body
     const {id} = req.params
+    const articulo = await ArticuloInsumo.findById(id)
+    const nuevoStock = Number(stockActual) + Number(articulo.stockActual)
     const updatedArticuloInsumo = {
         rubro,
         denominacion,
         precioCompra,
         precioVenta,
-        stockActual,
+        stockActual: nuevoStock,
         stockMinimo,
         unidadMedida,
         esInsumo,

@@ -43,6 +43,7 @@ artManuDetalleRouter.post('/:id', userExtractor, async(req, res, next) => {
     const newArtManuDetalle = new ArticuloManufacturadoDetalle({
         cantidad,
         unidadMedida: ingrediente.unidadMedida,
+        nombre: ingrediente.denominacion,
         articuloInsumo: ingrediente._id
     })
     try {
