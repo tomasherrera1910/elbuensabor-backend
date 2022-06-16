@@ -1,6 +1,5 @@
 const pedidosDetallesRouter = require('express').Router()
 const DetallePedido = require('../models/DetallePedido')
-const Pedido = require('../models/Pedido')
 const ArticuloInsumo = require('../models/ArticuloInsumo')
 const ArticuloManufacturado = require('../models/ArticuloManufacturado')
 const User = require('../models/User')
@@ -36,16 +35,11 @@ pedidosDetallesRouter.get('/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-pedidosDetallesRouter.post('/:id' , userExtractor, async(req, res, next) => {
-    const {userId, body, params} = req
+pedidosDetallesRouter.post('/' , userExtractor, async(req, res, next) => {
+    const {userId, body} = req
     const user = await User.findById(userId)
     if(!user){
         return res.status(401).json({error:'¡Tenés que loguearte antes de hacer un pedido!'})
-    }
-    const {id} = params
-    const pedido = await Pedido.findById(id)
-    if(!pedido){
-        return res.status(401).json({error:'¡No se encontró el pedido asociado!'})
     }
     const {cantidad, articuloId} = body
     if(!cantidad || !articuloId){
@@ -55,16 +49,27 @@ pedidosDetallesRouter.post('/:id' , userExtractor, async(req, res, next) => {
     const newDetallePedido = new DetallePedido({
         cantidad,
         articuloId,
-
     })
     try {
         const savedDetallePedido = await newDetallePedido.save()
-        pedido.detallesPedidos = pedido.detallesPedidos.concat(savedDetallePedido._id)
-        await pedido.save()
         res.status(201).json(savedDetallePedido)
     } catch (error) {
         next(error)
     }
+})
+pedidosDetallesRouter.put('/:id' , userExtractor, async(req,res, next) => {
+    const {userId, body} = req
+    const user = await User.findById(userId)
+    if(!user){
+        return res.status(401).json({error:'¡Tenés que loguearte antes de hacer un pedido!'})
+    }
+    const {cantidad} = body
+    const updatedDetallePedido = new DetallePedido({
+        cantidad
+    })
+    DetallePedido.findByIdAndUpdate(id, updatedDetallePedido, {new: true})
+    .then(detalle => res.status(202).json(detalle))
+    .catch(error => next(error))
 })
 pedidosDetallesRouter.delete('/:id', (req, res, next) => {
     const {id} = req.params

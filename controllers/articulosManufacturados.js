@@ -54,13 +54,14 @@ articulosManufacturadosRouter.put('/:id', userExtractor, async(req, res, next) =
     }
     const {rubro, tiempoEstimadoCocina, denominacion, precioVenta, imagen} = body
     const {id} = req.params
+    const articuloEditar = await ArticuloManufacturado.findById(id)
+    
     const updatedArticuloManufacturado = {
         rubro,
         tiempoEstimadoCocina,
         denominacion,
         precioVenta,
-        imagen,
-        baja
+        imagen: imagen || articuloEditar.imagen,
     }
     ArticuloManufacturado.findByIdAndUpdate(id, updatedArticuloManufacturado, {new: true})
     .then(articulo => res.status(202).json(articulo))
