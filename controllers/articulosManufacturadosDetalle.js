@@ -44,7 +44,8 @@ artManuDetalleRouter.post('/:id', userExtractor, async(req, res, next) => {
         cantidad,
         unidadMedida: ingrediente.unidadMedida,
         nombre: ingrediente.denominacion,
-        articuloInsumo: ingrediente._id
+        articuloInsumo: ingrediente._id,
+        articuloManufacturado: id
     })
     try {
         const savedArticuloManuDetalle = await newArtManuDetalle.save()
@@ -79,9 +80,29 @@ artManuDetalleRouter.delete('/:id', userExtractor, async(req, res, next) => {
         return res.status(401).json({error:'¡Solo los usuarios con permisos pueden realizar esta acción!'})
     }
     const {id} = params
-    ArticuloManufacturadoDetalle.findByIdAndDelete(id)
-    .then(() => res.status(204))
-    .catch(error => next(error))
+    
+    try {
+        let ingredientesSinEliminado = []
+        const articuloDetalle = await ArticuloManufacturadoDetalle.findById(id)
+        const articuloManufacturado = await ArticuloManufacturado.findById(articuloDetalle.articuloManufacturado)
+        // console.log(`articulo manufacturado 1: ${articuloManufacturado.ingredientes.length}`)
+        for (const ingrediente of articuloManufacturado.ingredientes) {
+            if(ingrediente.toString() !== id){
+                // console.log(ingrediente.toString())
+                // console.log(id)
+                // console.log('-------------------------------------')
+                ingredientesSinEliminado = ingredientesSinEliminado.concat(ingrediente)
+            }
+        }
+        articuloManufacturado.ingredientes = ingredientesSinEliminado
+        // console.log(`ingredientesSinELiminado: ${ingredientesSinEliminado.length}`)
+        // console.log(`articulo manufacturado 2: ${articuloManufacturado.ingredientes.length}`)
+        await articuloManufacturado.save()
+        await ArticuloManufacturadoDetalle.findByIdAndDelete(id)
+        res.status(204)
+    } catch (error) {
+        next(error)
+    }
 })
 
 module.exports = artManuDetalleRouter

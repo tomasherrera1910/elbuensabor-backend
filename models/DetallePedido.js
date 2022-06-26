@@ -4,6 +4,8 @@ const {Schema, model} = mongoose
 const detallePedidoSchema = new Schema({
     cantidad: Number,
     subtotal: Number,
+    articulo: String,
+    tipoDeArticulo: String,
     articuloId: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -13,7 +15,6 @@ const detallePedidoSchema = new Schema({
       },
       onArticle: {
         type: String,
-        required: true,
         enum: ['ArticuloManufacturado', 'ArticuloInsumo']
       },
      pedido: {

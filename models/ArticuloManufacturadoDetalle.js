@@ -8,6 +8,10 @@ const articuloManufacturadoDetalleSchema = new Schema({
     articuloInsumo: {
         type: Schema.Types.ObjectId,
         ref: 'ArticuloInsumo'
+    },
+    articuloManufacturado: {
+        type: Schema.Types.ObjectId,
+        ref: 'ArticuloManufacturado'
     }
 })
 
