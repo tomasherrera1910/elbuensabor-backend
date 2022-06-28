@@ -2,18 +2,23 @@ const mongoose = require('mongoose')
 const {model, Schema} = mongoose
 
 const pedidoSchema = new Schema({
-        fecha: Date,
+        fecha: String,
         estado: String,
-        horaEstimadaLlegada: Date,
+        tiempoEstimadoDeEspera: Number,
         tipoEnvio: String,
+	    metodoPago: String,
         total:Number,
-        detallesPedidos: [{
+	    detallesPedidos: [{
             type: Schema.Types.ObjectId,
             ref: 'DetallePedido'
         }],
         user: {
             type: Schema.Types.ObjectId,
             ref: 'User'
+        },
+	domicilio: {
+            type: Schema.Types.ObjectId,
+            ref: 'Address'
         }
 })
 pedidoSchema.set('toJSON', {
