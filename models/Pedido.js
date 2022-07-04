@@ -8,6 +8,7 @@ const pedidoSchema = new Schema({
         tipoEnvio: String,
 	    metodoPago: String,
         total:Number,
+        mensaje: String,
 	    detallesPedidos: [{
             type: Schema.Types.ObjectId,
             ref: 'DetallePedido'
@@ -16,10 +17,11 @@ const pedidoSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-	domicilio: {
+	    domicilio: {
             type: Schema.Types.ObjectId,
             ref: 'Address'
-        }
+        },
+        estadoMercadoPago: String
 })
 pedidoSchema.set('toJSON', {
     transform: (document, returnedObject) => {

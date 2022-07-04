@@ -12,7 +12,7 @@ articulosManufacturadosRouter.get('/', (req, res, next) => {
 
 articulosManufacturadosRouter.get('/:id', (req, res, next) => {
     const {id} = req.params
-    ArticuloManufacturado.findById(id)
+    ArticuloManufacturado.findById(id).populate('ingredientes')
     .then(articulo =>  {
         articulo ? res.json(articulo)
                  : res.status(404).end()
