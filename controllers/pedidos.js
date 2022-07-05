@@ -12,6 +12,7 @@ pedidosRouter.get('/', async(req, res, next) => {
     .then(pedidos => res.json(pedidos))
     .catch(error => next(error))
 })
+//GET PEDIDOS (pendientes para interfaz de Cajero y que vea que esta todo correcto antes de enviarlo a la cocina)
 pedidosRouter.get('/pendientes', userExtractor, async(req, res, next) => {
     const {userId} = req
     const user = await User.findById(userId)
@@ -32,6 +33,29 @@ pedidosRouter.get('/pendientes', userExtractor, async(req, res, next) => {
         .then(pedidos => res.json(pedidos))
         .catch(error => next(error))
 })
+//GET PEDIDOS (finalizado son los pedidos que ya cocinados que el cajero deberá entregar al cliente o al delivery)
+pedidosRouter.get('/finalizados', userExtractor, async(req, res, next) => {
+    const {userId} = req
+    const user = await User.findById(userId)
+    if(!user && (user.rol !== 'cajero' || user.rol !== 'admin')){
+        return res.status(401).json({error:'¡El usuario no tiene autorización para realizar esta operación!'})
+    }
+    Pedido.find({$or:[{ estado: 'En camino...' }, { estado: 'Finalizado' }]})
+          .populate(['detallesPedidos', 
+        {
+                path: 'user',
+                select: {'nombre':1, 'apellido':1, 'telefono':1},
+        },
+	    {
+                path: 'domicilio',
+                select: {'calle':1, 'numero':1},
+        },
+	])
+          .then(pedidos => res.json(pedidos))
+          .catch(error => next(error))
+})
+
+//GET PEDIDOS (enCocina son los pedidos que se muestran en la interfaz de los cocineros)
 pedidosRouter.get('/enCocina', userExtractor, async(req, res, next) => {
     const {userId} = req
     const user = await User.findById(userId)
@@ -44,8 +68,8 @@ pedidosRouter.get('/enCocina', userExtractor, async(req, res, next) => {
           .catch(error => next(error))
 })
 
-//PARA MOSTRARLE AL CAJERO CUANTO STOCK QUEDA ANTES DE PROCESAR UN PEDIDO
-pedidosRouter.get('/stockPedido/:id', async(req, res, next) => {
+//GET PEDIDOS PARA MOSTRARLE AL CAJERO CUANTO STOCK QUEDA ANTES DE PROCESAR UN PEDIDO
+pedidosRouter.get('/stockPedido/:id', async(req, res) => {
     const {id} = req.params
     let articulosYstock = []
     const pedido = await Pedido.findById(id)
@@ -66,6 +90,8 @@ pedidosRouter.get('/stockPedido/:id', async(req, res, next) => {
     }
     res.json(articulosYstock)   
 })
+
+//GET PEDIDOS (de un usuario para interfaz de misPedidos)
 pedidosRouter.get('/usuario/:id' , async(req, res, next) => {
     const {id} = req.params
     const user = await User.findById(id)
@@ -87,6 +113,7 @@ pedidosRouter.get('/usuario/:id' , async(req, res, next) => {
         .catch(error => next(error))
 })
 
+//CREAR PEDIDO (y 10% de descuento si retira en el local)
 pedidosRouter.post('/', userExtractor, async(req, res, next) => {
     const {userId, body} = req
     const user = await User.findById(userId)
@@ -109,7 +136,8 @@ pedidosRouter.post('/', userExtractor, async(req, res, next) => {
     const newPedido = new Pedido({
         fecha: fecha.toLocaleString(),
         estado: 'En revisión...',
-        tiempoEstimadoDeEspera: 0,
+        horaEstimadaLlegada: 0,
+        minutosEstimados: 0,
         tipoEnvio: metodoPago.envio,
         metodoPago: metodoPago.metodoDePago,
         detallesPedidos: articulos,
@@ -127,6 +155,8 @@ pedidosRouter.post('/', userExtractor, async(req, res, next) => {
         next(error)
     }
 })
+
+//EDITAR PEDIDO (ESTADO, STOCK, TIEMPO ESTIMADO)
 pedidosRouter.put('/:id', userExtractor, async(req, res,next) => {
     const {userId, params, body} = req
     const user = await User.findById(userId)
@@ -138,6 +168,7 @@ pedidosRouter.put('/:id', userExtractor, async(req, res,next) => {
 
     const pedido = await Pedido.findById(id)
     //DISMINUIR EL STOCK y CALCULAR TIEMPO ESTIMADO
+    let horaEstimada = 0
     let tiempoEstimado = 0
     if(estado === 'En cocina...'){
         for (const detalle of pedido.detallesPedidos) {
@@ -165,15 +196,20 @@ pedidosRouter.put('/:id', userExtractor, async(req, res,next) => {
         let tiempoEstimadoAcumuladoEnCocina = 0
         if(articulosEnCocina.length > 0){
             for (const pedidoEnCocina of articulosEnCocina) {
-                tiempoEstimadoAcumuladoEnCocina += pedidoEnCocina.tiempoEstimadoDeEspera
+                tiempoEstimadoAcumuladoEnCocina += pedidoEnCocina.minutosEstimados
             }   
             tiempoEstimado = tiempoEstimado + (tiempoEstimadoAcumuladoEnCocina / 4) //TENEMOS EN CUENTA QUE SIEMPRE HAY UN MÍNIMO DE 4 COCINEROS
         }
         if(pedido.metodoPago.envio === 'Envío a domicilio') tiempoEstimado += 10
+        
+        const fecha = new Date()
+        fecha.setTime(fecha.getTime() + (Math.round(tiempoEstimado)*1000*60));
+        horaEstimada = fecha.toLocaleTimeString()
         }
         const updatedPedido = {
             estado: estado || pedido.estado,
-            tiempoEstimadoDeEspera: tiempoEstimado || pedido.tiempoEstimadoDeEspera ,
+            horaEstimadaLlegada: horaEstimada || pedido.tiempoEstimadoDeEspera ,
+            minutosEstimados: tiempoEstimado || 0,
             estadoMercadoPago: estadoMercadoPago || null,
             mensaje: mensaje || null
         }

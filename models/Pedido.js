@@ -4,7 +4,8 @@ const {model, Schema} = mongoose
 const pedidoSchema = new Schema({
         fecha: String,
         estado: String,
-        tiempoEstimadoDeEspera: Number,
+        horaEstimadaLlegada: String,
+        minutosEstimados: Number,
         tipoEnvio: String,
 	    metodoPago: String,
         total:Number,
