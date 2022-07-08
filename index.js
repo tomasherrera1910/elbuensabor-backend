@@ -15,6 +15,7 @@ const articulosManufacturadosRouter = require('./controllers/articulosManufactur
 const pedidosDetallesRouter = require('./controllers/pedidosDetalles')
 const pedidosRouter = require('./controllers/pedidos')
 const mercadopagoRouter = require('./controllers/mercadopago')
+const reportesRouter = require('./controllers/reportes')
 const handleErrors = require('./middlewares/handleErrors')
 const notFound = require('./middlewares/notFound')
 
@@ -27,6 +28,7 @@ app.use('/articulosManufacturados', articulosManufacturadosRouter)
 app.use('/pedidosDetalle', pedidosDetallesRouter)
 app.use('/pedidos', pedidosRouter)
 app.use('/mercadopago', mercadopagoRouter)
+app.use('/reportes', reportesRouter)
 
 app.use(notFound)
 app.use(handleErrors)

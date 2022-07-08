@@ -11,9 +11,9 @@ artManuDetalleRouter.get('/', (req, res, next) => {
     .catch(error => next(error))
 })
 
-artManuDetalleRouter.get('/:id', (req, res, next) => {
+artManuDetalleRouter.get('/:id', async(req, res, next) => {
     const {id} = req.params
-    ArticuloManufacturadoDetalle.findById(id)
+    ArticuloManufacturado.findById(id)
     .then(detalle =>  {
         detalle ? res.json(detalle)
                  : res.status(404).end()
@@ -99,7 +99,7 @@ artManuDetalleRouter.delete('/:id', userExtractor, async(req, res, next) => {
         // console.log(`articulo manufacturado 2: ${articuloManufacturado.ingredientes.length}`)
         await articuloManufacturado.save()
         await ArticuloManufacturadoDetalle.findByIdAndDelete(id)
-        res.status(204)
+        res.status(204).json({"articuloEliminado":true})
     } catch (error) {
         next(error)
     }

@@ -116,7 +116,7 @@ pedidosDetallesRouter.put('/:id' , userExtractor, async(req,res, next) => {
 pedidosDetallesRouter.delete('/:id', (req, res, next) => {
     const {id} = req.params
     DetallePedido.findByIdAndDelete(id)
-    .then(() => res.send('Articulo eliminado del carrito!'))
+    .then(() => res.json({exito: 'Articulo eliminado del carrito!'}))
     .catch(error => next(error))
 })
 

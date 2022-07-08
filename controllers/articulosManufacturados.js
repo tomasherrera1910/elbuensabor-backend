@@ -76,7 +76,7 @@ articulosManufacturadosRouter.delete('/:id', userExtractor, async(req, res, next
     }
     const {id} = params
     ArticuloManufacturado.findByIdAndUpdate(id, {baja:true}, {new: true})
-    .then(() => res.status(204))
+    .then(articulo => res.status(204).json(articulo))
     .catch(error => next(error))
 })
 

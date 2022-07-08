@@ -42,6 +42,7 @@ articulosInsumoRouter.post('/', userExtractor, async(req, res, next) => {
         stockMinimo: stockMinimo || 0,
         unidadMedida,
         esInsumo: esInsumo,
+        fecha: new Date(),
         baja: false 
     })
     try {
@@ -71,6 +72,7 @@ articulosInsumoRouter.put('/:id', userExtractor, async(req, res, next) => {
         stockMinimo,
         unidadMedida,
         esInsumo,
+        fecha: new Date(),
         baja
     }
     ArticuloInsumo.findByIdAndUpdate(id, updatedArticuloInsumo, {new: true})
