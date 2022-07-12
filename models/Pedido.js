@@ -22,6 +22,10 @@ const pedidoSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Address'
         },
+        factura: {
+            type: Schema.Types.ObjectId,
+            ref: 'Factura'
+        },
         estadoMercadoPago: String
 })
 pedidoSchema.set('toJSON', {

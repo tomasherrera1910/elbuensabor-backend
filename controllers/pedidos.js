@@ -99,7 +99,7 @@ pedidosRouter.get('/usuario/:id' , async(req, res, next) => {
         return res.status(401).json({error:'¡Inicia sesión para ver tus pedidos!'})
     }
     Pedido.find({user : user.id})
-          .populate(['detallesPedidos', 
+          .populate(['detallesPedidos', 'factura',
         {
                 path: 'user',
                 select: {'nombre':1, 'apellido':1, 'telefono':1},
@@ -140,11 +140,13 @@ pedidosRouter.post('/', userExtractor, async(req, res, next) => {
         minutosEstimados: 0,
         tipoEnvio: metodoPago.envio,
         metodoPago: metodoPago.metodoDePago,
+        estadoMercadoPago: null,
         detallesPedidos: articulos,
         total: totalConDescuento ?? total,
         user: usuario,
         domicilio: domicilio || null,
-        mensaje: null
+        mensaje: null,
+        factura: null
     })
     try {
         const savedPedido = await newPedido.save()
@@ -210,11 +212,17 @@ pedidosRouter.put('/:id', userExtractor, async(req, res,next) => {
             estado: estado || pedido.estado,
             horaEstimadaLlegada: horaEstimada || pedido.tiempoEstimadoDeEspera ,
             minutosEstimados: tiempoEstimado || 0,
-            estadoMercadoPago: estadoMercadoPago || null,
+            estadoMercadoPago: estadoMercadoPago || pedido.estadoMercadoPago,
             mensaje: mensaje || null
         }
         Pedido.findByIdAndUpdate(id, updatedPedido, {new: true})
         .then(pedido => res.status(202).json(pedido))
         .catch(error => next(error))
+})
+pedidosRouter.delete('/:id', (req,res,next) => {
+    const {id} = req.params
+    Pedido.findByIdAndDelete(id)
+    .then(() => res.status(204).json({ok:'pedido eliminado con éxito!'}))
+    .catch(error => next(error))
 })
 module.exports = pedidosRouter

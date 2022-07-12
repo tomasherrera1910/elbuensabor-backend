@@ -204,7 +204,7 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
                 for(const fechaIngreso of fechasGanancias){
                 if(fechaIngreso.fecha === dateInsumo.toLocaleDateString()){
                     let index = fechasGanancias.findIndex(date => date.fecha === fechaIngreso.fecha)
-                    console.log(insumo.precioCompra)
+                    
                     fechasGanancias[index] = {...fechasGanancias[index], gastos: (fechasGanancias[index].gastos || 0) + insumo.precioCompra}
                     fechaEncontrada = true
                     break
@@ -215,7 +215,7 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
             fechasGanancias = fechasGanancias.concat({fecha:dateInsumo.toLocaleDateString(), gastos:insumo.precioCompra})
             }
         }    
-            console.log(fechasGanancias)
+            //console.log(fechasGanancias)
     return res.json(fechasGanancias)
 })
 
