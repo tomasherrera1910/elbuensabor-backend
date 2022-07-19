@@ -13,11 +13,11 @@ reportesRouter.get('/rankingComidas/:fechaDesde/:fechaHasta', async(req, res) =>
     }
     const dateDesde = new Date(fechaDesde)
     //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
+    // dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    // dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0)
         
     let rankingComidas = []
@@ -61,11 +61,11 @@ reportesRouter.get('/rankingCantPedidos/:fechaDesde/:fechaHasta', async(req, res
     }
     const dateDesde = new Date(fechaDesde)
     //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
+    // dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    // dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0) 
         
     let rankingPedidosPorUsuario = []
@@ -103,11 +103,11 @@ reportesRouter.get('/ingresos/:fechaDesde/:fechaHasta', async(req, res) => {
     }
     const dateDesde = new Date(fechaDesde)
     //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
+    // dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    // dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0)  
     let fechasIngresos = []
     const pedidos = await Pedido.find({})
@@ -142,11 +142,11 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
     }
     const dateDesde = new Date(fechaDesde)
     //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
+    // dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    // dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0)
     
     let fechasGanancias = []
