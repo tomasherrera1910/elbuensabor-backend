@@ -3,6 +3,7 @@ const Pedido = require('../models/Pedido')
 const DetallePedido = require('../models/DetallePedido')
 const User = require('../models/User')
 const ArticuloInsumo = require('../models/ArticuloInsumo')
+const formatDate = require('../utils/formatDate')
 
 reportesRouter.get('/rankingComidas/:fechaDesde/:fechaHasta', async(req, res) => {
     const {params} = req
@@ -11,23 +12,20 @@ reportesRouter.get('/rankingComidas/:fechaDesde/:fechaHasta', async(req, res) =>
         return res.status(400).json({error:"Ingrese las dos fechas para crear el ranking."})
     }
     const dateDesde = new Date(fechaDesde)
-    //EL INPUT DATE DEL FRONTEND VIENE CON UN MES MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setMonth(dateDesde.getMonth() + 1)
+    //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
+    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setMonth(dateHasta.getMonth() + 1)
+    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0)
         
     let rankingComidas = []
     const pedidos = await Pedido.find({})
         for(const pedido of pedidos){
-                //EN LA DB SE GUARDAN CAMBIADOS LOS MESES Y LOS DIAS HAGO ESTO PARA VOLVERLOS A CAMBIAR
-                const datePedido = new Date(pedido.fecha)
-                const day = datePedido.getDate()
-                datePedido.setDate(datePedido.getMonth())
-                datePedido.setMonth(day)
-                datePedido.setHours(0,0,0,0)
+            const fechaFormateada = formatDate(pedido.fecha)
+            const datePedido = new Date(fechaFormateada || null)
+            datePedido.setHours(0,0,0,0)
                 
                 if(datePedido >= dateDesde && datePedido <= dateHasta){
                     for(const detalle of pedido.detallesPedidos){
@@ -62,24 +60,20 @@ reportesRouter.get('/rankingCantPedidos/:fechaDesde/:fechaHasta', async(req, res
         return res.status(400).json({error:"Ingrese las dos fechas para crear el ranking."})
     }
     const dateDesde = new Date(fechaDesde)
-    //EL INPUT DATE DEL FRONTEND VIENE CON UN MES MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setMonth(dateDesde.getMonth() + 1)
+    //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
+    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setMonth(dateHasta.getMonth() + 1)
-    dateHasta.setHours(0,0,0,0)
+    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    dateHasta.setHours(0,0,0,0) 
         
     let rankingPedidosPorUsuario = []
     const pedidos = await Pedido.find({})
         for(const pedido of pedidos){
-                //EN LA DB SE GUARDAN CAMBIADOS LOS MESES Y LOS DIAS HAGO ESTO PARA VOLVERLOS A CAMBIAR
-                const datePedido = new Date(pedido.fecha)
-                const day = datePedido.getDate()
-                datePedido.setDate(datePedido.getMonth())
-                datePedido.setMonth(day)
-                datePedido.setHours(0,0,0,0)
-                
+            const fechaFormateada = formatDate(pedido.fecha)
+            const datePedido = new Date(fechaFormateada || null)
+            datePedido.setHours(0,0,0,0)
                 if(datePedido >= dateDesde && datePedido <= dateHasta){
                     const user = await User.findById(pedido.user)
                     let userEncontrado = false
@@ -100,6 +94,7 @@ reportesRouter.get('/rankingCantPedidos/:fechaDesde/:fechaHasta', async(req, res
     return res.json(rankingPedidosPorUsuario)
 })
 
+//INGRESOS -----------------------------------------------------------------------------------------------
 reportesRouter.get('/ingresos/:fechaDesde/:fechaHasta', async(req, res) => {
     const {params} = req
     const {fechaDesde, fechaHasta} = params
@@ -107,28 +102,20 @@ reportesRouter.get('/ingresos/:fechaDesde/:fechaHasta', async(req, res) => {
         return res.status(400).json({error:"Ingrese las dos fechas para crear el ranking."})
     }
     const dateDesde = new Date(fechaDesde)
-    //EL INPUT DATE DEL FRONTEND VIENE CON UN MES MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setMonth(dateDesde.getMonth() + 1)
+    //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
+    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setMonth(dateHasta.getMonth() + 1)
-    dateHasta.setHours(0,0,0,0)
-        
+    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
+    dateHasta.setHours(0,0,0,0)  
     let fechasIngresos = []
     const pedidos = await Pedido.find({})
         for(const pedido of pedidos){
-                //EN LA DB SE GUARDAN CAMBIADOS LOS MESES Y LOS DIAS HAGO ESTO PARA VOLVERLOS A CAMBIAR
-                const datePedido = new Date(pedido.fecha)
-                const day = datePedido.getDate()
-                datePedido.setDate(datePedido.getMonth())
-                datePedido.setMonth(day)
-                datePedido.setHours(0,0,0,0)
+            const fechaFormateada = formatDate(pedido.fecha)
+            const datePedido = new Date(fechaFormateada || null)
+            datePedido.setHours(0,0,0,0)
                 if(datePedido >= dateDesde && datePedido <= dateHasta){
-                    //El día aparece un día atrasado le seteamos uno mas para la interfaz del frontend
-                    datePedido.setTime(datePedido.getTime() + (1000*60*60*24))
-                    //Lo  mismo con el mes pero en este caso restamos
-                    datePedido.setMonth(datePedido.getMonth() - 1)
                     let fechaEncontrada = false
                     for(const fechaIngreso of fechasIngresos){
                     if(fechaIngreso.fecha === datePedido.toLocaleDateString()){
@@ -145,6 +132,8 @@ reportesRouter.get('/ingresos/:fechaDesde/:fechaHasta', async(req, res) => {
             }
     return res.json(fechasIngresos)
 })
+
+//GANANCIAS-----------------------------------------------------------------------
 reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
     const {params} = req
     const {fechaDesde, fechaHasta} = params
@@ -152,28 +141,22 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
         return res.status(400).json({error:"Ingrese las dos fechas para crear el ranking."})
     }
     const dateDesde = new Date(fechaDesde)
-    //EL INPUT DATE DEL FRONTEND VIENE CON UN MES MENOS ASI QUE LO AGREGAMOS
-    dateDesde.setMonth(dateDesde.getMonth() + 1)
+    //EL INPUT DATE DEL FRONTEND VIENE CON UN DÍA MENOS ASI QUE LO AGREGAMOS
+    dateDesde.setTime(dateDesde.getTime() + (1000*60*60*24))
     //SE SETEAN TODAS LAS HORAS EN 0 ASI PODEMOS COMPARAR LAS FECHAS SIN PREOCUPARNOS DE LA HORA
     dateDesde.setHours(0,0,0,0)
     const dateHasta = new Date(fechaHasta)
-    dateHasta.setMonth(dateHasta.getMonth() + 1)
+    dateHasta.setTime(dateHasta.getTime() + (1000*60*60*24))
     dateHasta.setHours(0,0,0,0)
-        
+    
     let fechasGanancias = []
     const pedidos = await Pedido.find({})
         for(const pedido of pedidos){
-                //EN LA DB SE GUARDAN CAMBIADOS LOS MESES Y LOS DIAS HAGO ESTO PARA VOLVERLOS A CAMBIAR
-                const datePedido = new Date(pedido.fecha)
-                const day = datePedido.getDate()
-                datePedido.setDate(datePedido.getMonth())
-                datePedido.setMonth(day)
+                const fechaFormateada = formatDate(pedido.fecha)
+                const datePedido = new Date(fechaFormateada || null)
                 datePedido.setHours(0,0,0,0)
+                
                 if(datePedido >= dateDesde && datePedido <= dateHasta){
-                    //El día aparece un día atrasado le seteamos uno mas para la interfaz del frontend
-                    datePedido.setTime(datePedido.getTime() + (1000*60*60*24))
-                    //Lo  mismo con el mes pero en este caso restamos
-                    datePedido.setMonth(datePedido.getMonth() - 1)
                     let fechaEncontrada = false
                     for(const fechaIngreso of fechasGanancias){
                     if(fechaIngreso.fecha === datePedido.toLocaleDateString()){
@@ -188,18 +171,15 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
                 fechasGanancias = fechasGanancias.concat({fecha:datePedido.toLocaleDateString(), ingresos:pedido.total})
                 }
             }
+            
     const insumos = await ArticuloInsumo.find({})
         for(const insumo of insumos){
-            const dateInsumo = new Date(insumo.fecha || null)
-            const day = dateInsumo.getDate()
-                dateInsumo.setDate(dateInsumo.getMonth())
-                dateInsumo.setMonth(day)
+            if(insumo.fecha){
+            const fechaFormateada = formatDate(insumo.fecha)
+            const dateInsumo = new Date(fechaFormateada || null)
                 dateInsumo.setHours(0,0,0,0)
+            
             if(dateInsumo >= dateDesde && dateInsumo <= dateHasta){
-                //El día aparece un día atrasado le seteamos uno mas para la interfaz del frontend
-                dateInsumo.setTime(dateInsumo.getTime() + (1000*60*60*24))
-                //Lo  mismo con el mes pero en este caso restamos
-                dateInsumo.setMonth(dateInsumo.getMonth() - 1)
                 let fechaEncontrada = false
                 for(const fechaIngreso of fechasGanancias){
                 if(fechaIngreso.fecha === dateInsumo.toLocaleDateString()){
@@ -213,7 +193,7 @@ reportesRouter.get('/ganancias/:fechaDesde/:fechaHasta', async(req, res) => {
             //Si no fue agregada aún la agregamos
             if(!fechaEncontrada)
             fechasGanancias = fechasGanancias.concat({fecha:dateInsumo.toLocaleDateString(), gastos:insumo.precioCompra})
-            }
+            }}
         }    
             //console.log(fechasGanancias)
     return res.json(fechasGanancias)

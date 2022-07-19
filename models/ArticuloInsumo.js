@@ -5,7 +5,7 @@ const articuloInsumoSchema = new Schema({
     rubro: String,
     denominacion: String,
     precioCompra: Number,
-    fecha: Date,
+    fecha: String,
     precioVenta: Number,
     stockActual: Number,
     stockMinimo: Number,

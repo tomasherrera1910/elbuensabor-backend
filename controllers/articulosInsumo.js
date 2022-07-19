@@ -63,6 +63,7 @@ articulosInsumoRouter.put('/:id', userExtractor, async(req, res, next) => {
     const {id} = req.params
     const articulo = await ArticuloInsumo.findById(id)
     const nuevoStock = Number(stockActual) + Number(articulo.stockActual)
+    const fecha = new Date()
     const updatedArticuloInsumo = {
         rubro,
         denominacion,
@@ -72,7 +73,7 @@ articulosInsumoRouter.put('/:id', userExtractor, async(req, res, next) => {
         stockMinimo,
         unidadMedida,
         esInsumo,
-        fecha: new Date(),
+        fecha: fecha.toLocaleString(),
         baja
     }
     ArticuloInsumo.findByIdAndUpdate(id, updatedArticuloInsumo, {new: true})
