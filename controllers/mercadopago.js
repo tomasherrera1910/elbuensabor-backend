@@ -19,9 +19,9 @@ mercadopagoRouter.post("/", (req, res) => {
 			}
 		],
 		back_urls: {
-			"success": "http://localhost:3000/pedido/susPedidos",
-			"failure": "http://localhost:3000/pedido/susPedidos",
-			"pending": "http://localhost:3000/pedido/susPedidos"
+			"success": "https://elbuensabor-herrera.netlify.app/pedido/susPedidos",
+			"failure": "https://elbuensabor-herrera.netlify.app/pedido/susPedidos",
+			"pending": "https://elbuensabor-herrera.netlify.app/pedido/susPedidos"
 		},
 		auto_return: "approved",
 	}
