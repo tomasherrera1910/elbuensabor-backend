@@ -7,7 +7,7 @@ mercadopago.configure({
 
 mercadopagoRouter.post("/", (req, res) => {
     const {body} = req
-    const {articulos, total} = body
+    const {articulos, total, id} = body
 	
 	let preference = {
 		items: [
@@ -18,6 +18,7 @@ mercadopagoRouter.post("/", (req, res) => {
 				quantity: 1,
 			}
 		],
+		external_reference: id,
 		back_urls: {
 			"success": "https://elbuensabor-herrera.netlify.app/pedido/susPedidos",
 			"failure": "https://elbuensabor-herrera.netlify.app/pedido/susPedidos",
