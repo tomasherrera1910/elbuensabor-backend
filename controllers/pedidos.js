@@ -6,6 +6,7 @@ const ArticuloManufacturadoDetalle = require('../models/ArticuloManufacturadoDet
 const ArticuloInsumo = require('../models/ArticuloInsumo')
 const User = require('../models/User')
 const userExtractor  = require('../middlewares/userExtractor')
+const changeTimezone = require('../utils/changeTimezone')
 
 pedidosRouter.get('/', async(req, res, next) => {
     Pedido.find({})
@@ -131,10 +132,9 @@ pedidosRouter.post('/', userExtractor, async(req, res, next) => {
     let totalConDescuento = null
     if(metodoPago.envio === 'Retiro en el local') totalConDescuento = (total - ((total * 10) / 100))
 
-    const fecha = new Date()
-    
+    const fecha = changeTimezone()
     const newPedido = new Pedido({
-        fecha: fecha.toLocaleString(),
+        fecha: fecha,
         estado: 'En revisión...',
         horaEstimadaLlegada: 0,
         minutosEstimados: 0,
@@ -204,14 +204,12 @@ pedidosRouter.put('/:id', userExtractor, async(req, res,next) => {
         }
         if(pedido.metodoPago.envio === 'Envío a domicilio') tiempoEstimado += 10
         
-        const fecha = new Date()
-        fecha.setTime(fecha.getTime() + (Math.round(tiempoEstimado)*1000*60));
-        horaEstimada = fecha.toLocaleTimeString()
+        horaEstimada = changeTimezone(tiempoEstimado)
         }
         const updatedPedido = {
             estado: estado || pedido.estado,
-            horaEstimadaLlegada: horaEstimada || pedido.tiempoEstimadoDeEspera ,
-            minutosEstimados: tiempoEstimado || 0,
+            horaEstimadaLlegada: pedido.horaEstimadaLlegada !== "0" ? pedido.horaEstimadaLlegada : horaEstimada,
+            minutosEstimados: pedido.minutosEstimados !== 0 ? pedido.minutosEstimados : tiempoEstimado,
             estadoMercadoPago: estadoMercadoPago || pedido.estadoMercadoPago,
             mensaje: mensaje || null
         }
