@@ -3,7 +3,7 @@ const changeTimezone = (tiempoEstimado) => {
     let argDate = ""
     if(tiempoEstimado){
         date.setTime(date.getTime() + (Math.round(tiempoEstimado)*1000*60))
-        argDate = date.toLocaleString('es-AR', { timeZone: "America/Argentina/Mendoza" })
+        argDate = date.toLocaleTimeString('es-AR', { timeZone: "America/Argentina/Mendoza" })
         console.log(argDate)
     }else{
         argDate = date.toLocaleString('es-AR', { timeZone: "America/Argentina/Mendoza" })
