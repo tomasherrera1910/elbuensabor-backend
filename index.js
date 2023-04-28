@@ -36,7 +36,6 @@ app.use('/googleLogin', googleRouter)
 
 app.use(notFound)
 app.use(handleErrors)
-app.listen(process.env.PORT,() => {
-    console.log(`server on in port ${process.env.PORT}`)
-}) 
-
+app.listen(process.env.PORT, () => {
+  console.log(`server on in port ${process.env.PORT}`)
+})

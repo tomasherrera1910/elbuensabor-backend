@@ -2,60 +2,59 @@ const userRouter = require('express').Router()
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
-userRouter.get('/' , (req, res, next) => {
-    User.find({})
+userRouter.get('/', (req, res, next) => {
+  User.find({})
     .then(data => res.json(data))
     .catch(error => next(error))
 })
 
 userRouter.get('/:id', (req, res, next) => {
-    const {id} = req.params
-    User.findById(id)
+  const { id } = req.params
+  User.findById(id)
     .then(user => {
-        user ? res.json(user)
-             : res.status(404).end()
+      user
+        ? res.json(user)
+        : res.status(404).end()
     })
     .catch(error => next(error))
 })
 
-userRouter.post('/', async(req, res, next) => {
-    const {nombre, apellido, username, email, clave, telefono} = req.body
-    
-    if(!nombre || !apellido || !username || !email || !clave || !telefono)
-        res.json({missingField: 'Todos los campos son obligatorios!'}).end()
-    
-    const claveHash = await bcrypt.hash(clave, 10)
-    const newUser = new User({
-        nombre,
-        apellido,
-        username,
-        email,
-        clave: claveHash,
-        telefono,
-        rol: 'usuario',
+userRouter.post('/', async (req, res, next) => {
+  const { nombre, apellido, username, email, clave, telefono } = req.body
+
+  if (!nombre || !apellido || !username || !email || !clave || !telefono) { res.json({ missingField: 'Todos los campos son obligatorios!' }).end() }
+
+  const claveHash = await bcrypt.hash(clave, 10)
+  const newUser = new User({
+    nombre,
+    apellido,
+    username,
+    email,
+    clave: claveHash,
+    telefono,
+    rol: 'usuario',
 	    addresses: [],
-        pedidos:[]
-    })
-    newUser.save()
-    .then(() => res.status(201).json({message: 'Usuario creado con éxito!'}))
+    pedidos: []
+  })
+  newUser.save()
+    .then(() => res.status(201).json({ message: 'Usuario creado con éxito!' }))
     .catch(error => next(error))
 })
 
-userRouter.put('/:id', async(req, res, next) => {
-    const {id} = req.params
-    const {nombre, apellido, clave, telefono, rol} = req.body
-    let passwordHash = undefined
-    
-    if(clave)
-       passwordHash = await bcrypt.hash(clave, 10) 
-    const updatedUser = {
-       nombre,
-       apellido,
-       clave : passwordHash,
-       telefono,
-       rol 
-    }
-    User.findByIdAndUpdate(id, updatedUser, {new: true})
+userRouter.put('/:id', async (req, res, next) => {
+  const { id } = req.params
+  const { nombre, apellido, clave, telefono, rol } = req.body
+  let passwordHash
+
+  if (clave) { passwordHash = await bcrypt.hash(clave, 10) }
+  const updatedUser = {
+    nombre,
+    apellido,
+    clave: passwordHash,
+    telefono,
+    rol
+  }
+  User.findByIdAndUpdate(id, updatedUser, { new: true })
     .then(user => res.json(user))
     .catch(error => next(error))
 })
