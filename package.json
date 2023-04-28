@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index"
+    "dev": "nodemon index",
+    "lint": "eslint --fix ."
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,10 @@
     "nodemailer": "6.7.7"
   },
   "devDependencies": {
-    "nodemon": "2.0.16"
+    "nodemon": "2.0.16",
+    "standard": "17.0.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
   }
 }
