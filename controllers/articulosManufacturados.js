@@ -1,8 +1,11 @@
 const articulosManufacturadosRouter = require('express').Router()
 const ArticuloManufacturado = require('../models/ArticuloManufacturado')
-const ArticuloManufacturadoDetalle = require('../models/ArticuloManufacturadoDetalle')
+// const ArticuloManufacturadoDetalle = require('../models/ArticuloManufacturadoDetalle')
 const User = require('../models/User')
 const userExtractor = require('../middlewares/userExtractor')
+const fileUpload = require('express-fileupload')
+const { uploadImage } = require('../utils/cloudinary')
+const fs = require('fs/promises')
 
 articulosManufacturadosRouter.get('/', (req, res, next) => {
   ArticuloManufacturado.find({}).populate('ingredientes')
@@ -21,22 +24,32 @@ articulosManufacturadosRouter.get('/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-articulosManufacturadosRouter.post('/', userExtractor, async (req, res, next) => {
+articulosManufacturadosRouter.post('/', fileUpload({
+  useTempFiles: true,
+  tempFileDir: './uploads'
+}), userExtractor, async (req, res, next) => {
   const { userId, body } = req
   const user = await User.findById(userId)
   if (!user || user.rol !== 'admin') {
     return res.status(401).json({ error: '¡Solo los usuarios con permisos pueden realizar esta acción!' })
   }
-  const { rubro, tiempoEstimadoCocina, denominacion, precioVenta, imagen } = body
+  const { rubro, tiempoEstimadoCocina, denominacion, precioVenta } = body
+  const { imagen } = req.files
   if (!rubro || !tiempoEstimadoCocina || !denominacion || !precioVenta || !imagen) {
     return res.status(400).json({ error: '¡Todos los campos son obligatorios!' })
   }
+  const cloudinaryObject = await uploadImage(imagen.tempFilePath)
+  // seteamos en la data los datos de la imagen creada en cloudinary
+  const finalImage = { public_id: cloudinaryObject.public_id, url: cloudinaryObject.secure_url }
+  // despues de subirla a cloudinary borramos el archivo de la carpeta uploads
+  await fs.unlink(imagen.tempFilePath)
+
   const newArticuloManufacturado = new ArticuloManufacturado({
     rubro,
     tiempoEstimadoCocina,
     denominacion,
     precioVenta,
-    imagen,
+    imagen: finalImage,
     baja: false,
     ingredientes: []
   })
