@@ -4,7 +4,7 @@ module.exports = (error, req, res, next) => {
   if (error.name === 'CastError') {
     res.status(400).end()
   } else if (error.name === 'MongoServerError') {
-    res.status(406).json(error.keyValue).end()
+    res.status(406).json(error.message).end()
   } else if (error.name === 'JsonWebTokenError') {
     res.status(401).json({
       error: 'Falta el token de inicio de sesión o es inválido'

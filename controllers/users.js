@@ -33,7 +33,7 @@ userRouter.post('/', async (req, res, next) => {
     clave: claveHash,
     telefono,
     rol: 'usuario',
-	    addresses: [],
+    addresses: [],
     pedidos: []
   })
   newUser.save()
