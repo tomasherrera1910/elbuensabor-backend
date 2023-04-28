@@ -6,7 +6,13 @@ const articuloManufacturadoSchema = new Schema({
   tiempoEstimadoCocina: Number,
   denominacion: String,
   precioVenta: Number,
-  imagen: String,
+  imagen: {
+    type: Object,
+    default: {
+      public_id: '',
+      url: ''
+    }
+  },
   ingredientes: [{
     type: Schema.Types.ObjectId,
     ref: 'ArticuloManufacturadoDetalle'
