@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
-const connectionString = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.n4rem.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`
+const connectionString = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.n4rem.mongodb.net/${process.env.DBNAME}
+`
 
 mongoose.connect(connectionString)
   .then(() => console.log('db connected'))
