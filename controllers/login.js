@@ -12,7 +12,7 @@ loginRouter.post('/', async (req, res) => {
       ? false
       : await bcrypt.compare(clave, user.clave)
     if (!user || !passwordCorrect) {
-      return res.status(401).json({ error: 'El mail y/o la contraseña son incorrectos' })
+      return res.status(401).send('El mail y/o la contraseña son incorrectos')
     }
   }
   const userForToken = {
