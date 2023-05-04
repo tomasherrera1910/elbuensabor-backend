@@ -67,7 +67,6 @@ userRouter.post('/', async (req, res, next) => {
 
 userRouter.put('/', userExtractor, async (req, res, next) => {
   const id = req.userId
-  console.log({ id })
   const { nombre, apellido, clave, telefono } = req.body
   let passwordHash
 
@@ -81,5 +80,22 @@ userRouter.put('/', userExtractor, async (req, res, next) => {
   User.findByIdAndUpdate(id, updatedUser, { new: true })
     .then(user => res.json(user))
     .catch(error => next(error))
+})
+userRouter.put('/:id', userExtractor, async (req, res, next) => {
+  const userLoggedId = req.userId
+  const userLogged = await User.findById(userLoggedId)
+  if (userLogged.rol === 'admin') {
+    const { rol } = req.body
+    const { id } = req.params
+
+    const updatedUser = {
+      rol
+    }
+    User.findByIdAndUpdate(id, updatedUser, { new: true })
+      .then(user => res.json(user))
+      .catch(error => next(error))
+  } else {
+    res.status(401).json({ error: 'Only admins can update role of a user' })
+  }
 })
 module.exports = userRouter
