@@ -3,21 +3,33 @@ const userExtractor = require('../middlewares/userExtractor')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
-userRouter.get('/', (req, res, next) => {
-  User.find({})
-    .then(data => res.json(data))
-    .catch(error => next(error))
+userRouter.get('/', userExtractor, async (req, res, next) => {
+  const id = req.userId
+  const loggedUser = await User.findById(id)
+  if (loggedUser.rol === 'admin') {
+    User.find({})
+      .then(data => res.json(data))
+      .catch(error => next(error))
+  } else {
+    res.status(401).json({ error: 'Only admins can view all users' })
+  }
 })
 
-userRouter.get('/:id', (req, res, next) => {
+userRouter.get('/:id', userExtractor, async (req, res, next) => {
   const { id } = req.params
-  User.findById(id)
-    .then(user => {
-      user
-        ? res.json(user)
-        : res.status(404).end()
-    })
-    .catch(error => next(error))
+  const userLoggedId = req.userId
+  const loggedUser = await User.findById(userLoggedId)
+  if (loggedUser.rol === 'admin') {
+    User.findById(id)
+      .then(user => {
+        user
+          ? res.json(user)
+          : res.status(404).end()
+      })
+      .catch(error => next(error))
+  } else {
+    res.status(401).json({ error: 'Only admins can view a specific user' })
+  }
 })
 
 userRouter.post('/', async (req, res, next) => {
