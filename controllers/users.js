@@ -15,7 +15,7 @@ userRouter.get('/', userExtractor, async (req, res, next) => {
   }
 })
 
-userRouter.get('/:id', userExtractor, async (req, res, next) => {
+userRouter.get('/get/:id', userExtractor, async (req, res, next) => {
   const { id } = req.params
   const userLoggedId = req.userId
   const loggedUser = await User.findById(userLoggedId)
@@ -30,6 +30,17 @@ userRouter.get('/:id', userExtractor, async (req, res, next) => {
   } else {
     res.status(401).json({ error: 'Only admins can view a specific user' })
   }
+})
+
+userRouter.get('/profile', userExtractor, async (req, res, next) => {
+  const id = req.userId
+  User.findById(id)
+    .then(user => {
+      user
+        ? res.json(user)
+        : res.status(404).end()
+    })
+    .catch(error => next(error))
 })
 
 userRouter.post('/', async (req, res, next) => {
