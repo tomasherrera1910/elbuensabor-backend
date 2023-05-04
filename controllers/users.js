@@ -1,4 +1,5 @@
 const userRouter = require('express').Router()
+const userExtractor = require('../middlewares/userExtractor')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
@@ -41,9 +42,10 @@ userRouter.post('/', async (req, res, next) => {
     .catch(error => next(error))
 })
 
-userRouter.put('/:id', async (req, res, next) => {
-  const { id } = req.params
-  const { nombre, apellido, clave, telefono, rol } = req.body
+userRouter.put('/', userExtractor, async (req, res, next) => {
+  const id = req.userId
+  console.log({ id })
+  const { nombre, apellido, clave, telefono } = req.body
   let passwordHash
 
   if (clave) { passwordHash = await bcrypt.hash(clave, 10) }
@@ -51,8 +53,7 @@ userRouter.put('/:id', async (req, res, next) => {
     nombre,
     apellido,
     clave: passwordHash,
-    telefono,
-    rol
+    telefono
   }
   User.findByIdAndUpdate(id, updatedUser, { new: true })
     .then(user => res.json(user))
