@@ -89,7 +89,7 @@ articulosInsumoRouter.delete('/:id', userExtractor, async (req, res, next) => {
     return res.status(401).json({ error: '¡Solo los usuarios con permisos pueden realizar esta acción!' })
   }
   const { id } = params
-  ArticuloInsumo.findByIdAndUpdate(id, { baja: true }, { new: true })
+  ArticuloInsumo.findByIdAndDelete(id)
     .then(() => res.status(204))
     .catch(error => next(error))
 })
