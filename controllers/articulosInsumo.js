@@ -90,7 +90,7 @@ articulosInsumoRouter.delete('/:id', userExtractor, async (req, res, next) => {
   }
   const { id } = params
   ArticuloInsumo.findByIdAndDelete(id)
-    .then(() => res.status(204))
+    .then(() => res.status(202).json({ success: 'Eliminado correctamente!' }))
     .catch(error => next(error))
 })
 
