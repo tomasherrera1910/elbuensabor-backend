@@ -31,7 +31,7 @@ articulosInsumoRouter.post('/', userExtractor, async (req, res, next) => {
     return res.status(400).json({ error: 'Debe llenar los campos rubro, denominacion, precio compra, stock y unidad de medida para crear el articulo' })
   }
   let esInsumo = false
-  if (rubro !== 'ingredientes') {
+  if (rubro !== 'Ingrediente') {
     esInsumo = true
   }
   const newArticuloInsumo = new ArticuloInsumo({
