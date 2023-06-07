@@ -101,8 +101,8 @@ articulosManufacturadosRouter.delete('/:id', userExtractor, async (req, res, nex
     return res.status(401).json({ error: '¡Solo los usuarios con permisos pueden realizar esta acción!' })
   }
   const { id } = params
-  ArticuloManufacturado.findByIdAndUpdate(id, { baja: true }, { new: true })
-    .then(articulo => res.status(204).json(articulo))
+  ArticuloManufacturado.findByIdAndDelete(id)
+    .then(_articulo => res.status(200).json({ success: 'Dish eliminated!' }))
     .catch(error => next(error))
 })
 
